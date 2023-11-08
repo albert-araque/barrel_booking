@@ -13,3 +13,9 @@
   justify-content: end;
   gap: 16px;
 }
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}

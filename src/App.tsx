@@ -4,8 +4,9 @@ import { BookingsTable } from "./components/BookingsTable/BookingsTable";
 import { DeleteBookingModal } from "./components/DeleteBookingModal/DeleteBookingModal";
 import { EditBookingModal } from "./components/EditBookingModal/EditBookingModal";
 import { NewBookingModal } from "./components/NewBookingModal/NewBookingModal";
+import { Box, Image } from "@mantine/core";
 import "./App.css";
-import { Title } from "@mantine/core";
+import bookingLogo from "./assets/booking_logo.png";
 
 function App() {
   const [bookings, setBookings] = useState<IBooking[]>([]);
@@ -40,8 +41,14 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Title order={1}>Booking list</Title>
+    <Box className="appContainer">
+      <Image
+        alt="BooKing logo"
+        src={bookingLogo}
+        w={500}
+        h={"auto"}
+        style={{ margin: "0 auto" }}
+      />
       <NewBookingModal open={openNewModal} onClose={() => toggleNewModal()} />
       <DeleteBookingModal
         open={openDeleteModal}
@@ -59,7 +66,7 @@ function App() {
         toggleEditModal={toggleEditModal}
         toggleDeleteModal={toggleDeleteModal}
       />
-    </>
+    </Box>
   );
 }
 

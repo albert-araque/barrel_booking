@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Table, Box, Button, Switch, Paper, ActionIcon } from "@mantine/core";
+import {
+  Table,
+  Box,
+  Button,
+  Switch,
+  Paper,
+  ActionIcon,
+  Text,
+} from "@mantine/core";
 import {
   AiFillDelete as DeleteIcon,
   AiFillEdit as EditIcon,
@@ -31,7 +39,7 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
       <Table.Tr key={booking.id}>
         <Table.Td>{booking.id}</Table.Td>
         <Table.Td>{booking.description}</Table.Td>
-        <Table>{booking.street}</Table>
+        <Table>{booking.street || "-----"}</Table>
         <Table.Td>{booking.status}</Table.Td>
         <Table.Td>{new Date(booking.createdAt).toLocaleDateString()}</Table.Td>
         <Table.Td>
@@ -43,8 +51,9 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
           <ActionIcon
             aria-label="Edit booking"
             onClick={() => toggleEditModal(booking.id)}
+            color="#99F5F2"
           >
-            <EditIcon />
+            <EditIcon color="black" />
           </ActionIcon>
           <ActionIcon
             aria-label="Delete"
@@ -61,7 +70,7 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
 
   return (
     <Box className="tableContainer">
-      <div
+      <Box
         style={{
           display: "flex",
           gap: "16px",
@@ -76,22 +85,29 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
           onChange={(event) => {
             setShowDeleted(event.currentTarget.checked);
           }}
+          color="#99F5F2"
         />
-        <Button variant="contained" onClick={() => toggleNewModal()}>
-          New booking
+        <Button
+          variant="filled"
+          color="#99F5F2"
+          onClick={() => toggleNewModal()}
+        >
+          <Text c="black" fw={500}>
+            New Booking
+          </Text>
         </Button>
-      </div>
-      <Paper shadow="xs" p="xl">
+      </Box>
+      <Paper shadow="md" radius="md" withBorder p="xl">
         <Table>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>ID</Table.Th>
-              <Table.Th>Description</Table.Th>
-              <Table.Th>Street</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th>Created at</Table.Th>
-              <Table.Th>Deleted at</Table.Th>
-              <Table.Th>Actions</Table.Th>
+              <Table.Th>DESCRIPTION</Table.Th>
+              <Table.Th>STREET</Table.Th>
+              <Table.Th>STATUS</Table.Th>
+              <Table.Th>CREATED AT</Table.Th>
+              <Table.Th>DELETED AT</Table.Th>
+              <Table.Th>ACTIONS</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{showBookings()}</Table.Tbody>

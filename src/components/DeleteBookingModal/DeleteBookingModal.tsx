@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal, Box, Text, Button } from "@mantine/core";
+import { Modal, Box, Text } from "@mantine/core";
+import { ModalButtons } from "../ModalButtons/ModalButtons";
 
 interface DeleteBookingModalProps {
   open: boolean;
@@ -20,14 +21,12 @@ export const DeleteBookingModal: React.FC<DeleteBookingModalProps> = ({
     <Modal opened={open} onClose={onClose} centered withCloseButton={false}>
       <Box className="modal">
         <Text size="xl">Are you sure you want to delete this booking?</Text>
-        <Box className="buttonRow">
-          <Button onClick={onClose} variant="outline" color="gray">
-            Cancel
-          </Button>
-          <Button onClick={deleteBooking} variant="filled" color="#b80d1d">
-            Delete
-          </Button>
-        </Box>
+        <ModalButtons
+          primary="Delete"
+          onCancel={onClose}
+          onPrimary={deleteBooking}
+          primaryColor="#b80d1d"
+        />
       </Box>
     </Modal>
   );

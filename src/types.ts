@@ -6,7 +6,7 @@ export interface IBooking {
   createdAt: Date;
   deletedAt: Date | undefined;
   description: string;
-  street: string;
+  street?: string;
 }
 
 export interface IFormData {
