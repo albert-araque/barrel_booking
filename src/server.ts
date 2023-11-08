@@ -1,4 +1,4 @@
-import { Booking } from "./types";
+import { IBooking } from "./types";
 import { createServer, Factory, Model } from "miragejs";
 import { fakerES } from "@faker-js/faker";
 
@@ -11,11 +11,11 @@ export function makeServer({ environment = "development" } = {}) {
     },
 
     factories: {
-      booking: Factory.extend<Booking>({
-        id: undefined,
+      booking: Factory.extend<IBooking>({
+        id: null,
         status: "Pending",
         createdAt: new Date(),
-        deletedAt: new Date(),
+        deletedAt: undefined,
         description: "",
         street: "",
       }),
@@ -39,6 +39,7 @@ export function makeServer({ environment = "development" } = {}) {
         street: fakerES.location.street(),
         description: "Habitación estándar con desayuno incluido",
         createdAt: new Date(),
+        deletedAt: new Date(),
       });
       server.create("booking", {
         status: "Cancelled",
@@ -53,6 +54,17 @@ export function makeServer({ environment = "development" } = {}) {
 
       this.get("/bookings", (schema) => {
         return schema.all("booking").models;
+      });
+
+      this.get("/booking/:id", (schema, request) => {
+        const id = request.params.id;
+        return schema.find("booking", id);
+      });
+
+      this.post("/booking", (schema, request) => {
+        const attrs = JSON.parse(request.requestBody);
+
+        return schema.create("booking", attrs);
       });
     },
   });
