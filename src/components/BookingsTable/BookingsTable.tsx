@@ -1,18 +1,11 @@
 import React, { useState } from "react";
-import {
-  Table,
-  Box,
-  Button,
-  Switch,
-  Paper,
-  ActionIcon,
-  Text,
-} from "@mantine/core";
+import { Table, Box, Paper, ActionIcon, Badge } from "@mantine/core";
 import {
   AiFillDelete as DeleteIcon,
   AiFillEdit as EditIcon,
 } from "react-icons/ai";
-import { IBooking } from "../../types";
+import { IBooking, Status } from "../../types";
+import { TableControls } from "./components/TableControls/TableControls";
 
 interface BookingsTableProps {
   bookings: IBooking[];
@@ -29,7 +22,22 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
 }) => {
   const [showDeleted, setShowDeleted] = useState(false);
 
+  const getStatusBadge = (status: Status) => {
+    let color = "";
+    if (status === "Confirmed") color = "#5cbc6a";
+    if (status === "Pending") color = "#e0914b";
+    if (status === "Cancelled") color = "#d13b3b";
+    if (status === "Deleted") color = "#212b3d";
+
+    return (
+      <Badge radius="sm" color={color}>
+        {status}
+      </Badge>
+    );
+  };
+
   const showBookings = () => {
+    if (bookings.length === 0) return;
     const filteredBookings = bookings.filter((booking) => {
       if (!showDeleted) return booking.status !== "Deleted";
       return true;
@@ -39,8 +47,8 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
       <Table.Tr key={booking.id}>
         <Table.Td>{booking.id}</Table.Td>
         <Table.Td>{booking.description}</Table.Td>
-        <Table>{booking.street || "-----"}</Table>
-        <Table.Td>{booking.status}</Table.Td>
+        <Table.Td>{booking.street || "-----"}</Table.Td>
+        <Table.Td>{getStatusBadge(booking.status)}</Table.Td>
         <Table.Td>{new Date(booking.createdAt).toLocaleDateString()}</Table.Td>
         <Table.Td>
           {booking.deletedAt
@@ -51,6 +59,7 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
           <ActionIcon
             aria-label="Edit booking"
             onClick={() => toggleEditModal(booking.id)}
+            disabled={booking.status === "Deleted"}
             color="#99F5F2"
           >
             <EditIcon color="black" />
@@ -58,8 +67,8 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
           <ActionIcon
             aria-label="Delete"
             onClick={() => toggleDeleteModal(booking.id)}
-            disabled={!!booking.deletedAt}
-            color="#b80d1d"
+            disabled={booking.status === "Deleted"}
+            color="#ad0918"
           >
             <DeleteIcon />
           </ActionIcon>
@@ -70,36 +79,20 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
 
   return (
     <Box className="tableContainer">
-      <Box
-        style={{
-          display: "flex",
-          gap: "16px",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          padding: 16,
-        }}
+      <TableControls
+        showDeleted={showDeleted}
+        setShowDeleted={setShowDeleted}
+        toggleNewModal={toggleNewModal}
+      />
+      <Paper
+        shadow="xl"
+        radius="md"
+        withBorder
+        p="xl"
+        style={{ backgroundColor: "#2d303e" }}
       >
-        <Switch
-          label="Show deleted"
-          checked={showDeleted}
-          onChange={(event) => {
-            setShowDeleted(event.currentTarget.checked);
-          }}
-          color="#99F5F2"
-        />
-        <Button
-          variant="filled"
-          color="#99F5F2"
-          onClick={() => toggleNewModal()}
-        >
-          <Text c="black" fw={500}>
-            New Booking
-          </Text>
-        </Button>
-      </Box>
-      <Paper shadow="md" radius="md" withBorder p="xl">
         <Table>
-          <Table.Thead>
+          <Table.Thead style={{ backgroundColor: "#2d303e" }}>
             <Table.Tr>
               <Table.Th>ID</Table.Th>
               <Table.Th>DESCRIPTION</Table.Th>
