@@ -1,6 +1,6 @@
 # BooKings
 
-BooKings is a simple application that manages the CRUD operations of a Booking entity.
+BooKings is an application that manages the CRUD operations of a Booking entity.
 
 The backend is mocked with miragejs, so there is not a real database.
 
