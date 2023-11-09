@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { LoadingOverlay, Select, TextInput, Box } from "@mantine/core";
 import { ModalButtons } from "../ModalButtons/ModalButtons";
-import { IFormData, IStatusOptions } from "../../types";
+import { IFormData, IStatusOptions, Status } from "../../types";
 
 interface BookingFormProps {
   primary: string;
@@ -17,13 +17,12 @@ const STATUS_OPTIONS: IStatusOptions[] = [
   { value: "Pending", label: "Pending" },
   { value: "Cancelled", label: "Cancelled" },
   { value: "Confirmed", label: "Confirmed" },
-  { value: "Deleted", label: "Deleted" },
 ];
 
 const DEFAULT_VALUES = {
   description: "",
   street: "",
-  status: undefined,
+  status: "Pending" as Status,
 };
 
 export const BookingForm: React.FC<BookingFormProps> = ({

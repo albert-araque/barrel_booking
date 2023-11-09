@@ -1,19 +1,24 @@
 import React from "react";
 import { Modal, Box, Text } from "@mantine/core";
 import { ModalButtons } from "../ModalButtons/ModalButtons";
+import { deleteBooking as deleteBookingService } from "../../services/bookingService";
 
 interface DeleteBookingModalProps {
   open: boolean;
   onClose: () => void;
+  onDelete: () => void;
   currentBooking: null | number;
 }
 
 export const DeleteBookingModal: React.FC<DeleteBookingModalProps> = ({
   open,
   onClose,
-  //   currentBooking,
+  onDelete,
+  currentBooking,
 }) => {
-  const deleteBooking = () => {
+  const deleteBooking = async () => {
+    const deletedBooking = await deleteBookingService(currentBooking);
+    if (deletedBooking) onDelete();
     onClose();
   };
 

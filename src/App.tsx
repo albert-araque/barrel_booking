@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IBooking } from "./types";
 import { BookingsTable } from "./components/BookingsTable/BookingsTable";
 import { DeleteBookingModal } from "./components/DeleteBookingModal/DeleteBookingModal";
@@ -7,6 +7,7 @@ import { NewBookingModal } from "./components/NewBookingModal/NewBookingModal";
 import { Box, Image } from "@mantine/core";
 import "./App.css";
 import bookingLogo from "./assets/booking_logo.png";
+import { listBookings } from "./services/bookingService";
 
 function App() {
   const [bookings, setBookings] = useState<IBooking[]>([]);
@@ -16,10 +17,13 @@ function App() {
   const [currentBooking, setCurrentBooking] = useState<null | number>(null);
 
   const getAllBookings = async () => {
-    const response = await fetch("/api/bookings");
-    const bookings = await response.json();
+    try {
+      const bookings = await listBookings();
 
-    setBookings(bookings);
+      setBookings(bookings);
+    } catch (err) {
+      setBookings([]);
+    }
   };
 
   const toggleNewModal = () => {
@@ -49,15 +53,21 @@ function App() {
         h={"auto"}
         style={{ margin: "0 auto" }}
       />
-      <NewBookingModal open={openNewModal} onClose={() => toggleNewModal()} />
+      <NewBookingModal
+        open={openNewModal}
+        onClose={() => toggleNewModal()}
+        onNew={() => getAllBookings()}
+      />
       <DeleteBookingModal
         open={openDeleteModal}
         onClose={() => toggleDeleteModal(null)}
+        onDelete={() => getAllBookings()}
         currentBooking={currentBooking}
       />
       <EditBookingModal
         open={openEditModal}
         onClose={() => toggleEditModal(null)}
+        onUpdate={() => getAllBookings()}
         currentBooking={currentBooking}
       />
       <BookingsTable

@@ -1,5 +1,5 @@
 import { IBooking } from "./types";
-import { createServer, Factory, Model } from "miragejs";
+import { createServer, Factory, Model, Response } from "miragejs";
 import { fakerES } from "@faker-js/faker";
 
 export function makeServer({ environment = "development" } = {}) {
@@ -62,11 +62,46 @@ export function makeServer({ environment = "development" } = {}) {
       });
 
       this.post("/booking", (schema, request) => {
-        const attrs = JSON.parse(request.requestBody);
+        try {
+          const attrs = JSON.parse(request.requestBody);
+          attrs.createdAt = new Date();
+          return schema.create("booking", attrs);
+        } catch (error) {
+          return new Response(500);
+        }
+      });
 
-        return schema.create("booking", attrs);
+      this.put("/booking/edit/", (schema, request) => {
+        try {
+          const attrs = JSON.parse(request.requestBody);
+          const bookingId = attrs.id;
+          const bookingToUpdate = schema.find("booking", bookingId);
+
+          if (!bookingToUpdate) return new Response(204);
+          bookingToUpdate.update("description", attrs.description);
+          bookingToUpdate.update("street", attrs.street);
+          bookingToUpdate.update("status", attrs.status);
+          return new Response(200, undefined, bookingToUpdate);
+        } catch (error) {
+          return new Response(500);
+        }
+      });
+
+      this.put("/booking/delete/:id", (schema, request) => {
+        try {
+          const bookingId = request.params.id;
+          const bookingToDelete = schema.find("booking", bookingId);
+
+          if (!bookingToDelete) return new Response(204);
+          bookingToDelete.update("deletedAt", new Date());
+          bookingToDelete.update("status", "Deleted");
+          return new Response(200, undefined, bookingToDelete);
+        } catch (error) {
+          return new Response(500);
+        }
       });
     },
   });
+
   return server;
 }
